@@ -1,3 +1,6 @@
+clean gcloud : 
+gcloud config unset auth/authorization_token_file
+
 
 
 packetSource <> Destination
