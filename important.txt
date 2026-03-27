@@ -1,0 +1,802 @@
+
+
+packetSource <> Destination
+Pcpa 
+
+Three 
+Syn
+Syn-Ack
+Ack
+
+sudo tcpdump -i any -w proxy.pcap
+sudo tcpdump -i any -w backend.pcap
+
+(To install tcpdump run : sudo apt-get update && sudo apt-get install tcpdump)
+
+If you want to check from which IP connection is going you can check using below command :
+
+1) VM : curl https://httpbin.org/ip
+
+2) Pod : kubectl exec -it <Pod-Name> curl https://httpbin.org/ip
+
+Gcloud command List IP’s in project : https://cloud.google.com/sdk/gcloud/reference/compute/addresses/list
+
+Install commands mtr iperf etc: 
+https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/calculate-network-throughput-over-interconnect#install_the_tools
+Check kube-config file of current cluster :- kubectl config view --minify
+
+GVC Issue : 53795921
+
+
+DNS
+Ping  
+
+Networking Command : 
+
+Update gcloud cli (Cloud Shell) : gcloud components update
+
+To check the live latency : 
+
+
+sudo hping3 -S <Destination-IP Address> -p <Port>  (sudo ap-get install hping3)
+
+(Note: Please refer to this below link for further installation guide on hping command
+ https://linux.die.net/man/8/hping3
+
+E.g. : hping -S 172.20.0.28 -p 8280
+
+
+
+Command to send request on IP multiple time : d
+for ((i=1;i<=100;i++)); do   curl -v --header "Connection: keep-alive" "<LB IP>"; done
+
+Install Ping command in GKE Pod : 
+apt-get update
+apt-get install -y iputils-ping
+
+Capturing the Packets from the GKE POD
+
+Login into the pod : kubectl exec -n  <namespace> nginx-1-6f56f68fd8-5nxlw   -it -- /bin/bash
+Install tcpdump : apt-get install tcpdump
+Login into same pod from different window using the same command by adding + button from same Cloud shell
+
+Make the continuous request to any website/google.cpm from the second window. 
+
+In first window, in the pod run the command : tcpdump -n -w filename.pcap or  tcpdump -i any -w testing.pcap
+
+
+Stop the request and download the filename.pcap file.
+
+Imp step : 1st check whether the file is present in the root directory: ls  
+<filename.pcap>
+
+2nd : exit from the root user 
+3rd :  execute this command from the cloud shell to download the pcap file : 
+kubectl cp <POD-NAME>:/<root>/<filename.pcap> /home/<user>/<filename.pcap>
+
+For example : kubectl cp nginx-2-54d7b49cb9-m45jv:/<actual-path/root/pwd>/testing.pcap /home/yadgir/testing.pcap
+
+Here's a more detailed and clarified version of the steps for taking a packet capture in a GKE POD:
+
+1. **Connect to GKE Cluster and Log into the Pod:**
+   - Use the following command to connect to your GKE Cluster and log into the desired pod:
+     ```
+     kubectl exec -n <namespace> <pod-name> -it -- /bin/bash
+     ```
+   - Replace `<namespace>` and `<pod-name>` with your specific namespace and pod name.
+
+2. **Install tcpdump:**
+   - Inside the pod, install `tcpdump` using the command:
+     ```
+     apt-get install tcpdump
+     ```
+
+3. **Open a Second Window in Cloud Shell:**
+   - Open another window in Cloud Shell using the "+" button or a new terminal.
+
+4. **Run tcpdump in the First Window:**
+   - In the first Cloud Shell window (inside the pod), run the following command to capture packets:
+     ```
+     tcpdump -i any -w filename.pcap
+     ```
+   - This command captures packets on all interfaces and saves them to a file named "filename.pcap."
+
+5. **Generate Continuous Requests in the Second Window:**
+   - In the second Cloud Shell window, simulate network traffic by making continuous requests to any website or Google:
+     ```
+     curl <URL>
+     ```
+   - Allow the packets to be captured for a desired duration.
+
+6. **Stop tcpdump Capture:**
+   - In the first window, stop the packet capture by pressing "ctrl+C."
+
+7. **Exit from the GKE POD:**
+   - Exit the GKE pod by typing:
+     ```
+     exit
+     ```
+
+8. **Download the Captured Packet File:**
+   - From the Cloud Shell, use the following command to download the captured packet file to your local machine:
+     ```
+     kubectl cp <POD-NAME>:/root/filename.pcap /home/<user>/filename.pcap
+     ```
+   - Replace `<POD-NAME>` with your pod's name and `<user>` with your Cloud Shell username.
+
+By following these steps, you can perform a packet capture within a GKE pod and analyze the network traffic for troubleshooting or debugging purposes.
+
+
+Headless service : https://blog.knoldus.com/what-is-headless-service-setup-a-service-in-kubernetes/
+It can be accessible from outside of the cluster within VPC scope because it doesn’t allocate CLuster IP to service.
+Cluster IP is only accessible within cluster nodes and pods
+
+Install Dig command- sudo apt install dnsutils
+
+dttInstall ping on GKE Node : toolbox >> enter
+					ping 8.8.8.8
+gcpdiag lint --project=gke-services-sohail
+
+DNS Host Entry Path : 
+sudo -i
+cd /etc/hosts
+add www.google.com <IP>
+
+Send Traffic for Testing - 
+(Practice for load balancer IP and check the logs)
+
+- Install ApacheBench (Apache Bench (ab) is a load testing and benchmarking tool for Hypertext Transfer Protocol (HTTP) server)
+	
+Run command in the Cloud Shell : 
+>> sudo apt-get install apache2-utils
+Verify that the installation : 
+>> ab -V
+Load Testing :
+ >> ab -c 120 -t 60  http://<IP-address>/
+
+ApacheBench (ab) will execute 120 concurrent requests against the provided endpoint for 1 minute.
+
+for i in seq 1 50; do curl https://www.example.com/ ; done
+
+Page Navigation Code : 
+
+sudo -i >> to have permission of editing 
+
+https://ubiq.co/tech-blog/change-nginx-port-number-ubuntu/
+// index.html
+
+<html>
+<body>
+<center><a href="./home.html"> route to home </a></center>
+<center><h1> HTTP & HTTPS Test </h1></center>
+</body>
+</html>
+
+
+// home.html
+
+<html>
+<body>
+<center><h1> Home Page </h1></center>
+</body>
+</html>
+
+
+
+Host Entry 
+
+
+
+Windows VM RDP Extension -  https://chrome.google.com/webstore/detail/chrome-rdp-for-google-clo/mpbbnannobiobpnfblimoapbephgifkm
+Install Wireshark in ChromeBook
+(Run the commands in terminal)
+sudo bash
+apt-get update
+apt-get install wireshark
+yes
+exit
+Wireshark
+
+Wireshark field - frame.time_delta_displayed   (Edit -> Preference -> Column)
+
+Install nslookup
+sudo apt install dnsutils  
+nslookup google.com				// It will show meta data server ip
+
+Install ping
+ sudo apt update && sudo apt upgrade  
+ sudo apt install iputils-ping
+
+Install Nginx 
+sudo apt-get update
+sudo apt-get install -y nginx
+
+Edit Nginx Web Page
+sudo -i
+cd /var/www/html
+ls
+Copy the name
+nano <filename>
+Ctrl+o -> Enter -> ctrl+x			// To save
+
+Startup Script Apache2 
+#!/bin/bash
+apt update
+apt install -y apache2
+echo “Text” > /var/www/html/index.html	 // Optional to edit apache default page
+
+Startup Script Nginx
+#!/bin/bash
+apt update
+apt -y install nginx
+
+
+
+DNS Server Change in Linux/SSH
+sudo -i 					// To go in root folder and edit 
+rm -r /etc/resolv.conf
+nano /etc/resolv.conf
+nameserver 10.128.0.3  			// Your primary DNS server IP
+Ctrl+o -> Enter -> Ctrl+x			// Save 
+
+nslookup <ip or example.com> 		// check the change server 
+
+
+Packet Capturing Commands
+sudo tcpdump -i any -w webserver.pcap src 10.128.0.2
+sudo tcpreplay -i ens4 DNS24k.pcap
+readlink -f ens4-packets.pcap  //To know the File path
+
+
+
+GKE Pod Access
+error:
+I guess becuase it is System pod we can't access
+
+1) deploy Pods in our cluster
+   : click on cluster -> Deploy -> Existing container image -> done -> contine -> keep default -> deploy
+   //default is namespace name
+
+2) kubectl get pod -n default
+3) kubectl exec -it -n default nginx-1-754ddbcd6c-kxnlf -- bash
+4) apt-get upgrade
+5) apt-get update && apt-get install tcpdump
+6) tcpdump -i any -w webserver.pcap
+
+===For accessing GKE pod===
+
+- Connect your GKE cluster
+
+Loggin to your pod:
+
+kubectl exec -it PODNAME -c CONTAINER -- /bin/bash
+cat /run/secrets/kubernetes.io/serviceaccount/token && echo
+
+or kubectl exec -n <NAMESPACE> <POD_NAME>  -it -- /bin/sh
+
+Sudo command will not work while installing telnet
+
+-> 
+
+
+
+
+
+
+
+
+
+
+telnet 127.0.0.1 80
+
+kubectl exec -n <NAMESPACE> <POD_NAME>  -it -- /bin/sh
+
+To install dnsutils in a Google Kubernetes Engine (GKE) pod, you can follow these steps:
+
+Access the Pod:
+
+Use kubectl to access your pod. For example:
+bash
+Copy code
+kubectl exec -it <pod-name> -- /bin/bash
+Update Package Repository:
+
+Update the package repository information to ensure you're installing the latest version of packages:
+bash
+Copy code
+apt-get update
+Install dnsutils:
+
+Install the dnsutils package using the package manager (apt-get in this case):
+bash
+Copy code
+apt-get install dnsutils
+Verify Installation:
+
+You can verify that dnsutils is installed by using commands like nslookup or dig. For example:
+bash
+Copy code
+nslookup google.com
+Here's the complete set of commands:
+
+bash
+Copy code
+kubectl exec -it <pod-name> -- /bin/bash
+apt-get update
+apt-get install dnsutils
+# Verify installation
+nslookup google.com
+Replace <pod-name> with the actual name of your pod.
+
+Note: Ensure that the dnsutils package is suitable for your use case, as it may not be included in all base images for containers. If dnsutils is not present in your container's base image, you might need to choose an image that includes it or create a custom image with dnsutils installed.
+
+
+GKE Commands
+
+
+
+
+
+Kubectl get pods
+---create a directory
+mkdir tcpdump
+
+---open a directory
+cd tcpdump
+
+---Install the tcpdump
+apk add tcpdump
+
+--- Run the below command to capture the packets
+tcpdump -n -w filename.pcap
+
+--- Copy the pcap file from the GKE pod to Local directory
+kubectl cp <Pod_Name>:/tcpdump/filename.pcap /home/ahemadpasha/tcp.pcap
+
+
+
+
+
+
+
+
+
+
+
+
+Signed URL (Loadbalancer)
+Create the VM & instance goup 
+Create Load balancer
+Enable CDN
+Use following commands to generate key and signed URL
+ head -c 16 /dev/urandom | base64 | tr +/ -_ > KEY_FILE_NAME
+
+gcloud compute backend-services \
+   add-signed-url-key BACKEND_NAME \
+   --key-name KEY_NAME \
+   --key-file KEY_FILE_NAME
+
+gcloud compute sign-url \
+  "URL" \
+  --key-name KEY_NAME \
+  --key-file KEY_FILE_NAME \
+  --expires-in TIME_UNTIL_EXPIRATION \
+  --validate\
+
+
+
+
+
+Regional http(s) Load balancer Steps for Cross Project
+** Limitation : We can only have Same region of backend for LB
+Steps :
+Create a Host and Service Project with shared VPC.
+Create a VM instance on a service project and deploy any service(Nginx server).
+Create an unmanaged instance group on a service project for a VM instance.
+Create a Regional Backend at service Project for Instance Group.
+On the Host project create a Regional http(s) LB.
+Select the region same as your instance group region.
+After selecting Network you will see the  “Proxy-only subnet” option. Reserve it  with an IP address. (A proxy-only subnet provides a set of IP addresses that Google uses to run Envoy proxies on your behalf. The proxies terminate connections from the client and create new connections to the backends.)
+In the Backend Configuration click on “Cross-project backend services” and enter your service project id and backend name created on the service project.
+Click on add backend service and create.
+
+
+Cross-Project Global http(s) Load balancer Steps
+
+
+Create 1 host project and 2 service projects with shared VPC. 
+
+Setup for Service project 1:
+Create a VM instance in different regions and different Zones using a shared vpc network. i.e.  us-east1. 
+
+Setup for Service project 2:
+Created a VM instance in different regions and different Zones using a shared vpc network. i.e. europe-west1
+
+Setup for Host project:
+Create HTTP(S) External Load Balancer with Global settings.
+While setting up Load balancer , in Backend Type select Hybrid connectivity network endpoint group (Zonal) .
+
+
+
+
+
+3. In the backend add two Endpoint Groups with the two different VM instances internal IP.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://network00.com/NetworkTools/IPv4SubnetTools/ (Subnet calculator)
+
+Capturing the Packets from the GKE POD
+
+---create a directory
+mkdir tcpdump
+
+---open a directory
+cd tcpdump
+
+---Install the tcpdump
+apk add tcpdump
+
+--- Run the below command to capture the packets
+tcpdump -n -w filename.pcap
+
+--- Copy the pcap file from the GKE pod to Local directory
+kubectl cp <Pod_Name>:/tcpdump/filename.pcap /home/ahemadpasha/tcp.pcap
+To take the packet captures on source pod, please follow the below steps:
+Login into the pod : kubectl exec -n  <namespace> <pod-name> -it -- /bin/bash
+Install tcpdump : apt-get install tcpdump
+Login into same pod from different window using the same command 
+Please try to access the other cluster service (Ex: curl -v us-east1-kafka-cp-schema-registry.kafka.svc.clusterset.local)
+In first window, in the pod run the command : tcpdump -n -w filename.pcap
+Stop the request and download the filename.pcap file. 
+
+Also, follow the above steps to take the packet captures on the destination service pod as well. 
+Login into the pod : kubectl exec -n  <namespace> <pod-name> -it -- /bin/bash
+Install tcpdump : apt-get install tcpdump
+Run the command : tcpdump -n -w filename.pcap
+ Try to access the cluster service from source pod (Ex: curl -v us-east1-kafka-cp-schema-registry.kafka.svc.clusterset.local)
+Stop the request and download the filename.pcap file. 
+Login to Pod
+kubectl exec -n  <namespace> <pod-name> -it -- /bin/sh  
+kubectl exec -n  <namespace> <pod-name> -it -- /bin/bash 
+
+curl -v 127.0.0.1:8080
+
+ canonical-service-controller-manager
+kubectl exec -n default demo2-55bc949bfd-dql42 -it -- /bin/sh  
+
+
+
+
+
+Create APP Engine and deploy python app
+
+gcloud app create 										// it will create app engine
+git clone https://github.com/GoogleCloudPlatform/python-docs-samples			// Clone python project git repository with project 
+ls 												// check the python folder
+cd python-docs-samples/									// go inside python folder 
+cd appengine/											
+cd standard_python3/
+ls												// see hello_world app is there
+cd hello_world/
+ls	                                                                                                                                  // you can see app.yaml
+gcloud app deploy app.yaml                                                                                                 // deploy 
+gcloud app browse	                                                                                                           // you will get the URL for python app
+
+
+Create Could Function - Link
+
+Open cloud function page
+Create function
+Select 2nd gen in Environment option & Give function name 
+In the Authentication field, select Allow unauthenticated invocations.
+click next
+In Runtime select Node.js 16
+In the Source code field, select Inline editor.
+Click on the hello app URL in the Trigger tab.
+
+
+
+
+
+
+
+
+
+
+Route Traffic through VPN -> VM -> Internet
+
+
+
+Run command on VM after enabling forwarding : https://fale.io/blog/2020/03/01/vpn-with-nat-in-google-cloud#:~:text=Create%20an%20instance%20to%20perform%20the%20NATting
+
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -t nat -A POSTROUTING -o ens4 -j MASQUERADE
+curl https://icanhazip.com
+
+
+
+Packet capture download from VM
+
+sudo apt intstall -y tcpdump
+sudo tcpdump -w FILENAME
+pwd
+path >> /home/username/FILENAME
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo tcpdump -i any -w <output_file.pcap>
+sudo apt-get install tcpdump
+
+
+Packet capture filter :t                  cp.port==5726 &&  ip.addr==103.239.139.126
+
+
+Add Routes
+
+sudo ip route show table all
+sudo ip route add 34.149.96.178/32 via 10.138.0.1 dev ens5
+
+
+
+
+
+Recently, I have tested the same setup in my test environment by assigning the external IP to nic1 only and I have added the routes in the VM instance as below : 
+
+sudo ip route add 35.235.240.0/20 via <nic0 gateway IP> dev ens4
+-> sudo ip route add 35.235.240.0/20 via 172.23.0.129 dev ens4 (As per your setup)
+
+	Note : 35.235.240.0/20 is the IP address of SSH so we will not loose the access/connection to VM instance while deleting/updating default route.
+            If you are doing SSH from on-prem please first add the the route for on-prem IP range by following the step 1.
+ 
+sudo ip route change default via <nic1 gateway IP> dev ens5
+->  sudo ip route add 35.235.240.0/20 via 172.23.0.1 dev ens4 (As per your setup)
+
+Verify if default route is updated with nic1 gateway IP using command “sudo ip route show all”
+
+This routes configuration will not be permanently saved. So to make this permanent i would suggest you kindly add this in your VM’s startup script. 
+
+[1] sudo netstat -tulpn | grep LISTEN
+[2] systemctl status nginx
+[3] netstat -tnl | grep 80
+[4] sudo apt-get update
+[5] sudo apt-get install telnet
+[6] telnet 127.0.0.1 <port>
+
+sudo firewall-cmd --list-all
+
+
+/usr/share/nginx/html
+
+
+
+
+
+
+
+
+
+Unable to connect from GKE to External Endpoints
+
+https://docs.google.com/presentation/d/1vFp_Ppa_fwxiMSDkE5YlSYHqF3AP6oH8iuBnJ8eC_6M/edit#slide=id.g2e92d419b07_0_0
+
+
+
+
+Check full datapath to the endpoints either hosted on cloud or on-prem(VPC peering/Interconnect/VPN involved)
+Check if the cluster is public or private
+Is the connection issue from a particular pod/node or all?
+Is the connection working from a node but not pod? (Check ip-masq-agent and its configmap). Once confirmed, check if the destination has allowed communication from pod IPs
+Is the connection working from nodes in a particular nodepool (Compare the nodepool settings)
+Run the ad hoc connectivity test from pod/node to destination
+To rule out GKE issue, you can test the connectivity of the endpoint from a GCE VM in the same VPC as that of the GKE cluster
+Perform a packet capture on both ends to verify the traffic behaviour
+
+(Contd.) Unable to connect from GKE to External Endpoints
+
+If it is a private cluster, we can access the endpoints on the internet (endpoints here could be public control plane endpoint or googleapis such as storage.googleapis.com) using either Cloud NAT or PGA.
+Is cloud NAT enabled for the cluster subnets (both node and pod CIDR). if pod CIDR is missing we might see connectivity working from nodes but not from pods.
+Get the available routers with the command: ~$ gcloud compute routers list
+Get the status of the NAT gateway with the command: ~$ gcloud compute routers get-status <Name of CR> (enter the region using appropriate numerical choice)
+There could be a possibility of network policy denying the traffic.
+If PGA is enabled, is the configuration correct and per the public documentation and have configuration
+setup for private google access (*.googleapis.com, *gcr.io). If all looks well, we can run a reachability or an ad-hoc connectivity test to check what exactly is the traffic flow and where is it getting blocked.
+
+
+
+kubectl config view - -minify
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.jsdelivr.com/globalping?measurement=8YvvOGpkqx70YZTs
+
+https://docs.google.com/presentation/d/1V432ywgKpAI6EaMLc6-mGPB7lOlm5fHySVMZYyFNoIM/edit?resourcekey=0-9rYr0iNsaGKX8Y9GOzD-TQ&urp=gmail_link#slide=id.g2750f569ba8_0_0
+
+
+
+
+
+GKE Gateway Load balancer testing steps: 
+
+Cluster : cluster-1
+
+Project : http-ingress
+
+2 deployments (  nginx-gateway-1, nginx-4-gateway ) and 2 services (nginx-gateway-1-service , nginx-4-gateway-service)
+
+Application  : jiotest.cloudhelp.cloud
+
+gcloud compute ssl-certificates create example-com-one \
+    --domains=jiotest.cloudhelp.cloud \
+    --global
+
+Frontend : frontendtest.yaml 
+
+kind: Gateway
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: frontendtest
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      options:
+        networking.gke.io/pre-shared-certs: example-com-one
+
+Backend 1 : nginx-gateway-1-testing.yaml
+
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: backendtest-external-one
+  labels:
+    gateway: frontendtest
+spec:
+  parentRefs:
+  - name: frontendtest
+  hostnames:
+  - "jiotest.cloudhelp.cloud"
+  rules:
+  - backendRefs:
+    - name: nginx-gateway-1-service
+      port: 80
+
+Backend 2:  nginx-4-gateway-testing-2.yaml
+
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: backendtest-2
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: frontendtest
+  hostnames:
+    - "jiotest.cloudhelp.cloud"
+  rules:
+    - matches:
+      - path:
+          value: /de
+      backendRefs:
+        - name: nginx-4-gateway-service
+          port: 80
+Private Service Connect troubleshooting doc TSE
+https://docs.google.com/presentation/d/1ZuybI6lIYchSlBqeUpe6loxbksWhqaNFIpAaH-1hbYo/edit?resourcekey=0-6AZMizN957XZmgTN4VL8CQ#slide=id.g27ca8f8a226_0_0
+
+Please find the command for rotating tcpdump ( TSE provided this command in one of the case)
+For LB
+sudo tcpdump -i any -C 25 -w 'capture-%Y-%m-%d_%H-%M-%S.pcap' host <load balancer ip address>
+and for client
+sudo tcpdump -i any -C 25 -w 'capture-%Y-%m-%d_%H-%M-%S.pcap' host <client ip address>
+
+
+
+
+
+
+
+
+
+
+
+
+
+, It seems that you are already using custom kube-dns scaling to manage the kube-dns pod count, so I would suggest kindly increase the kube-dns pod count and let me know whether it resolves your issue. For more information, please refer to the public documentation [2]. In general, the methods to improve kube-dns performance are given in our public documentation[3]. You are already using Node-Local DNS cache but this can be further improved by upscaling the kube-dns pod replicas.
+
+ 
+
+
+Self managed certificate creation 
+
+Sonu
+4:31 PM
+openssl genrsa -out test.key 2048
+cat <<'EOF' >test
+[req]
+default_bits              = 2048
+req_extensions            = extension_requirements
+distinguished_name        = dn_requirements
+prompt                    = no
+
+[extension_requirements]
+basicConstraints          = CA:FALSE
+keyUsage                  = nonRepudiation, digitalSignature, keyEncipherment
+
+
+[dn_requirements]
+countryName               = US
+stateOrProvinceName       = Florida
+localityName              = city
+0.organizationName        = test
+organizationalUnitName
+commonName                = test.cloudhelp.cloud
+
+EOF
+Sonu
+4:33 PM
+
+openssl req -new -key test.key     -out  test.csr     -config test
+
+openssl x509 -req \
+    -signkey test.key \
+    -in  test.csr \
+    -out test.pem \
+    -extfile test \
+    -extensions extension_requirements \
+    -days 7
+
+Download the files using test/test.key and test/test.pem file
+
+Go to pantheon and create and upload the certificate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
